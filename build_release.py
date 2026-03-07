@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os.path
+import re
 import shutil
 import subprocess
 import tarfile
@@ -36,8 +37,20 @@ if os.path.exists(outBaseDir):
 os.makedirs(outBaseDir)
 os.makedirs(releaseDir)
 
-# get version number / tag
-gitTag = subprocess.check_output(["git", "describe", "--tags", "--abbrev=0"]).decode('utf-8').strip()
+# get version number
+versionString = ""
+versionPattern = re.compile(r"appVersion = \"([0-9]+\.[0-9]+\.[0-9]+)\"")
+
+with open('./pkg/app/app.go') as appGoFile:
+    for line in appGoFile:
+      match = re.search(versionPattern, line)
+      if match != None:
+        versionString = match.group(1)
+        break
+
+if versionString == "":
+  print("aborting: failed to parse version number")
+  exit(-1)
 
 # loop through and build all targets
 for target in targets:
@@ -71,7 +84,7 @@ for target in targets:
   # compress release file
   # special case for windows & mac to use zip format
   if GOOS.lower() == "windows" or GOOS.lower() == "darwin":
-    shutil.make_archive(f"{releaseDir}/apc-p15-tool-{gitTag}_{target}", "zip", targetOutDir)
+    shutil.make_archive(f"{releaseDir}/apc-p15-tool-{versionString}_{target}", "zip", targetOutDir)
   else:
     # for others, use gztar and set permissions on the files
 
@@ -84,6 +97,6 @@ for target in targets:
       return tarinfo
 
     # make tar
-    with tarfile.open(f"{releaseDir}/apc-p15-tool-{gitTag}_{target}.tar.gz", "w:gz") as tar:
+    with tarfile.open(f"{releaseDir}/apc-p15-tool-{versionString}_{target}.tar.gz", "w:gz") as tar:
         for file in os.listdir(targetOutDir):
           tar.add(os.path.join(targetOutDir, file), arcname=file, recursive=False, filter=set_permissions)

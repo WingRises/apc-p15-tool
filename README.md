@@ -212,7 +212,7 @@ separate script.
 
 ## Building
 
-Python3, Go, and git all must be installed to run the build script.
+Python3 and Go must be installed to run the build script.
 
 Once the dependencies are installed, clone this repo and run 
 `python build_release.py`. If you only want to build for certain OS or
