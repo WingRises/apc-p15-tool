@@ -26,16 +26,12 @@ targets = [
 ###
 
 # Script
+print("initializing apc-p15-tool build script")
+
 # relative dir is root
 scriptDir = dirname = os.path.dirname(__file__)
 outBaseDir = os.path.join(scriptDir, outRelativeDir)
 releaseDir = os.path.join(outBaseDir, "_release")
-
-# recreate paths
-if os.path.exists(outBaseDir):
-  shutil.rmtree(outBaseDir)
-os.makedirs(outBaseDir)
-os.makedirs(releaseDir)
 
 # get version number
 versionString = ""
@@ -52,8 +48,19 @@ if versionString == "":
   print("aborting: failed to parse version number")
   exit(-1)
 
+print("building apc-p15-tool version", versionString)
+
+# recreate paths
+if os.path.exists(outBaseDir):
+  print("build output directory already exists, removing it")
+  shutil.rmtree(outBaseDir)
+os.makedirs(outBaseDir)
+os.makedirs(releaseDir)
+
 # loop through and build all targets
 for target in targets:
+  print("building apc-p15-tool for target:", target, "...")
+
   # environment vars
   split = target.split("_")
   GOOS = split[0]
@@ -100,3 +107,5 @@ for target in targets:
     with tarfile.open(f"{releaseDir}/apc-p15-tool-{versionString}_{target}.tar.gz", "w:gz") as tar:
         for file in os.listdir(targetOutDir):
           tar.add(os.path.join(targetOutDir, file), arcname=file, recursive=False, filter=set_permissions)
+
+print("exiting apc-p15-tool build script")
