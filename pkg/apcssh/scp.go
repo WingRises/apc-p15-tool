@@ -46,7 +46,7 @@ func (cli *Client) UploadSCP(destination string, fileContent []byte, filePermiss
 	// Go implementation sends additional 0x22 bytes when using Run() (as
 	// compared to putty's scp tool). these additional bytes seem to cause the
 	// apc ups to fail execution of the command
-	payload := []byte(fmt.Sprintf("scp -q -t %s", destination))
+	payload := fmt.Appendf(nil, "scp -q -t %s", destination)
 	payloadLen := uint8(len(payload))
 	payload = append([]byte{0, 0, 0, payloadLen}, payload...)
 
