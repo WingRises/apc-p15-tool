@@ -1,5 +1,14 @@
 # APC P15 Tool Changelog
 
+## [v1.3.4] - 2026-03-06
+
+Update to latest Go version and latest versions of all dependencies.
+Run `go fix` command.
+Update time display in log messages to ensure consistent time zone.
+Remove `git` dependency in build script.
+Add some basic logging to the build script.
+
+
 ## [v1.3.3] - 2025-10-19
 
 Update to latest Go version and latest versions of all dependencies.
