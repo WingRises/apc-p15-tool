@@ -121,13 +121,13 @@ func (app *app) pemToAPCP15(keyPem, certPem []byte, parentCmdName string) (keyFi
 	// check validity dates
 	if time.Now().Before(p15.Cert.NotBefore) {
 		app.stdLogger.Printf("WARNING: %s: Current time (%s) is before certificate's NotBefore time (%s).",
-			parentCmdName, time.Now().Format(timeLoggingFormat), p15.Cert.NotBefore.Format(timeLoggingFormat))
+			parentCmdName, time.Now().Local().Format(timeLoggingFormat), p15.Cert.NotBefore.Local().Format(timeLoggingFormat))
 		warned = true
 	}
 
 	if time.Now().After(p15.Cert.NotAfter) {
 		app.stdLogger.Printf("WARNING: %s: Current time (%s) is after certificate's NotAfter time (%s).",
-			parentCmdName, time.Now().Format(timeLoggingFormat), p15.Cert.NotAfter.Format(timeLoggingFormat))
+			parentCmdName, time.Now().Local().Format(timeLoggingFormat), p15.Cert.NotAfter.Local().Format(timeLoggingFormat))
 		warned = true
 	}
 
